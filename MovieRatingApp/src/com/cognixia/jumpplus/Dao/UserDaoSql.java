@@ -16,22 +16,19 @@ public class UserDaoSql implements UserDao {
 
     @Override
     public boolean displayFilms() throws SQLException {
-        try (PreparedStatement pstmt = conn.prepareStatement("Select name,id,coalesce(avg(rating) ,'N/A')As 'Avg', count(rating) AS count from user_film\n" +
-                "right join film on user_film.film_id=film.id\n" +
-                "group by film_id;")) {
+        try (PreparedStatement pstmt = conn.prepareStatement("""
+                Select name,id,coalesce(avg(rating) ,'N/A')As 'Avg', count(rating) AS count from user_film
+                right join film on user_film.film_id=film.id
+                group by film.id;""")) {
             ResultSet rs = pstmt.executeQuery();
-            String avg = null;
-            String name = null;
-            int id = 0;
-            int count = 0;
 
             System.out.printf("%20s %20s %20s %20s", "#", "Film", "Avg Rating", "# of Ratings");
             System.out.println("\n--------------------------------------------------------------------------");
             while (rs.next()) {
-                name = rs.getString("name");
-                avg = rs.getString("Avg");
-                count = rs.getInt("count");
-                id = rs.getInt("id");
+                String name = rs.getString("name");
+                String avg = rs.getString("Avg");
+                int count = rs.getInt("count");
+                int id = rs.getInt("id");
                 System.out.printf("%20s %20s %20s %20s%n", id, name, avg, count);
             }
 
@@ -50,15 +47,11 @@ public class UserDaoSql implements UserDao {
             if (!rs.next())
                 throw new ResourceNotFoundException(id);
 
-            String name = null;
-            int filmid = 0;
-
-            filmid = rs.getInt("id");
-            name = rs.getString("name");
+            int filmid = rs.getInt("id");
+            String name = rs.getString("name");
 
 
             film = new Film(filmid, name);
-            System.out.println(film);
             return film;
 
         }
@@ -67,7 +60,7 @@ public class UserDaoSql implements UserDao {
 
 
     @Override
-    public void setConnection() throws FileNotFoundException, ClassNotFoundException, IOException, SQLException {
+    public void setConnection() throws  ClassNotFoundException, IOException, SQLException {
         conn = ConnectionManager.getConnection();
     }
 
