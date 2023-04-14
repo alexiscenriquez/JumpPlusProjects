@@ -8,11 +8,18 @@ public class User {
     public User() {
     }
 
-    public User(int id, String email, String password) {
-        this.id = id;
+    public User(int id, String email, String password,int role) {
+        this.id=id;
         this.email = email;
         this.password = password;
+        this.role=role;
     }
+    public User( String email, String password) {
+        this.email = email;
+        this.password = password;
+        this.role=1;
+    }
+
 
     public int getId() {
         return id;
@@ -53,6 +60,7 @@ public class User {
                 "id=" + id +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", role=" + role +
                 '}';
     }
 }
