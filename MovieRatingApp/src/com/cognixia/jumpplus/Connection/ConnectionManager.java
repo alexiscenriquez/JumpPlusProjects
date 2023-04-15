@@ -12,7 +12,7 @@ public class ConnectionManager {
 
 
     //establish the connection if it's not already connected
-    private static void makeConnection() throws FileNotFoundException, IOException, ClassNotFoundException, SQLException {
+    private static void makeConnection() throws IOException, ClassNotFoundException, SQLException {
 
         // Properties will be used to access our properties file and read its values
         Properties props = new Properties();
@@ -31,7 +31,7 @@ public class ConnectionManager {
     }
 
     // returns the single connection objected stored in the class
-    public static Connection getConnection() throws FileNotFoundException, IOException, ClassNotFoundException, SQLException {
+    public static Connection getConnection() throws IOException, ClassNotFoundException, SQLException {
 
         // not make the connection again if we are already connected
         if (connection == null) {

@@ -3,7 +3,6 @@ package com.cognixia.jumpplus.Dao;
 import com.cognixia.jumpplus.Connection.ConnectionManager;
 import com.cognixia.jumpplus.exceptions.ResourceNotFoundException;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -86,8 +85,6 @@ public class UserDaoSql implements UserDao {
             if (!rs.next()) {
                 return Optional.empty();
             }
-            System.out.println(rs.getInt("id") + rs.getString("email"));
-
 
             int id = rs.getInt("id");
             String email = rs.getString("email");
