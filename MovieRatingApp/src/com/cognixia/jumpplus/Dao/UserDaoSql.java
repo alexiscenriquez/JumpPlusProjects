@@ -76,6 +76,21 @@ public class UserDaoSql implements UserDao {
     }
 
     @Override
+    public boolean getUserRatings(int id) throws SQLException {
+        try(PreparedStatement pstmt= conn.prepareStatement("select name,rating from user_film join film on user_film.film_id=film.id where user_id=? ")){
+       pstmt.setInt(1,id);
+        ResultSet rs=pstmt.executeQuery();
+            System.out.printf("%20s %20s%n","Film", "Your Rating");
+        while(rs.next()){
+            String name=rs.getString("name");
+            int rating =rs.getInt("rating");
+            System.out.printf("%20s %20s%n",name,rating);
+        }
+        }
+        return false;
+    }
+
+    @Override
     public Optional<User> authenticateUser(String emaila, String password) throws SQLException {
         try (PreparedStatement pstmt = conn.prepareStatement("select * from User where email=? and password=?")) {
             pstmt.setString(1, emaila);

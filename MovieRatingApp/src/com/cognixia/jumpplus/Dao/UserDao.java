@@ -11,6 +11,7 @@ public interface UserDao {
     Film getFilm(int id) throws ResourceNotFoundException, SQLException;
     void setConnection() throws ClassNotFoundException, IOException, SQLException;
      boolean addUser(User user) throws SQLException;
+     boolean getUserRatings(int id) throws SQLException;
     Optional<User> authenticateUser(String username, String password) throws SQLException;
 
     boolean addRating(int userId, int filmId, int rating) throws SQLException;

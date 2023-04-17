@@ -54,13 +54,22 @@ public class Main {
     }
     public static void signUp(Scanner scanner,UserDaoSql userDao) throws SQLException {
         String email = validateEmailAddress(scanner);
-        System.out.println("Enter Password \n");
+        System.out.println("Enter Password");
         String password = scanner.next();
-        User user = new User(email, password);
 
-        if (userDao.addUser(user)) {
-            System.out.println("User Was Added");
-        }
+        String confirmation;
+        do {
+            System.out.println("Confirm Password");
+            confirmation = scanner.next();
+            if (confirmation.equals(password)) {
+                User user = new User(email, password);
+                if (userDao.addUser(user)) {
+                    System.out.println("User Was Added");
+                }
+            } else System.out.println("Password doesn't match, try again");
+        } while (!confirmation.equals(password));
+
+
     }
     public static User signIn(Scanner scanner, UserDaoSql userDao) throws SQLException {
 
@@ -85,18 +94,28 @@ public class Main {
 
     public static void userActions(UserDaoSql userDao, Scanner scanner, User user) throws SQLException, ResourceNotFoundException {
         int movieToRate;
+        int choice;
         do {
-            userDao.displayFilms();
-            System.out.println("Enter id of the show you'd like to rate or 0 to Exit");
-            movieToRate = scanner.nextInt();if(movieToRate!=0) {
-                Film film = userDao.getFilm(movieToRate);
-                System.out.println("Movie " + film.getName());
-                    System.out.println("Rating:\n0. Really Bad\n1. Bad\n2. Not Good\n3. Okay\n4. Good\n5. Great");
-                    int rating = scanner.nextInt();
-                    if (userDao.addRating(user.getId(), film.getId(), rating))
-                        System.out.println("Rating added");
-                }
-        } while (movieToRate != 0);
+            System.out.println("Enter 1 to rate a film or 2 to view your ratings or 3 to Exit");
+            choice = scanner.nextInt();
+            if (choice == 1) {
+                do {
+                    userDao.displayFilms();
+                    System.out.println("Enter id of the show you'd like to rate or 0 to Exit");
+                    movieToRate = scanner.nextInt();
+                    if (movieToRate != 0) {
+                        Film film = userDao.getFilm(movieToRate);
+                        System.out.println("Movie " + film.getName());
+                        System.out.println("Rating:\n0. Really Bad\n1. Bad\n2. Not Good\n3. Okay\n4. Good\n5. Great");
+                        int rating = scanner.nextInt();
+                        if (userDao.addRating(user.getId(), film.getId(), rating))
+                            System.out.println("Rating added");
+                    }
+                } while (movieToRate != 0);
+            } else if (choice == 2) {
+                userDao.getUserRatings(user.getId());
+            }
+        } while (choice != 3);
     }
 
     public static void adminActions(Scanner scanner) throws SQLException, IOException, ClassNotFoundException, ResourceNotFoundException {
