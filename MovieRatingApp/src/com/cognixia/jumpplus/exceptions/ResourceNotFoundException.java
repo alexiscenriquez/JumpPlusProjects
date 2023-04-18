@@ -5,6 +5,6 @@ public class ResourceNotFoundException extends Exception{
 
     public ResourceNotFoundException(int msg) {
         // calls the Exception(String msg) constructor
-        super("Resource with id "+ msg+ "was not found");
+        super("Film with id "+ msg+ " was not found");
     }
 }

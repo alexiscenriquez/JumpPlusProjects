@@ -13,7 +13,6 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Welcome! Please select an option from the menu");
         try (Scanner scanner = new Scanner(System.in)) {
-
             int choice;
             do {
                 System.out.println("1.Register \n2.Login \n3.View Movies\n4.Exit");
@@ -35,7 +34,7 @@ public class Main {
             } while (choice != 4);
             System.out.println("Thank You!");
         } catch (SQLException | IOException | ClassNotFoundException | ResourceNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         }
     }
 
@@ -96,24 +95,64 @@ public class Main {
         int movieToRate;
         int choice;
         do {
-            System.out.println("Enter 1 to rate a film or 2 to view your ratings or 3 to Exit");
+            System.out.println("Enter 1 to rate a film or 2 to view your ratings or 3 to exit");
             choice = scanner.nextInt();
             if (choice == 1) {
                 do {
                     userDao.displayFilms();
-                    System.out.println("Enter id of the show you'd like to rate or 0 to Exit");
+                    System.out.println("Enter id of the show you'd like to rate or 0 to go back");
                     movieToRate = scanner.nextInt();
-                    if (movieToRate != 0) {
+                    if(movieToRate!=0) {
                         Film film = userDao.getFilm(movieToRate);
                         System.out.println("Movie " + film.getName());
-                        System.out.println("Rating:\n0. Really Bad\n1. Bad\n2. Not Good\n3. Okay\n4. Good\n5. Great");
-                        int rating = scanner.nextInt();
-                        if (userDao.addRating(user.getId(), film.getId(), rating))
-                            System.out.println("Rating added");
+                        int rating;
+                        do {
+                            System.out.println("Rating:\n0. Really Bad\n1. Bad\n2. Not Good\n3. Okay\n4. Good\n5. Great");
+                            rating = scanner.nextInt();
+                            if (rating <= 5) {
+                                try {
+                                    userDao.addRating(user.getId(), film.getId(), rating);
+                                    System.out.println("Rating added");
+                                } catch (SQLException e) {
+                                    System.out.println("You've already rated this film");
+                                }
+                            } else System.out.println("Invalid option");
+                        } while (rating > 5);
                     }
                 } while (movieToRate != 0);
             } else if (choice == 2) {
                 userDao.getUserRatings(user.getId());
+                int viewChoice;
+                do {
+                    System.out.println("Enter 1 to Edit a rating, 2 to Delete a rating or 0 to go back");
+                     viewChoice = scanner.nextInt();
+                     if(viewChoice==1){
+                         System.out.println("Enter the id of the show you'd like to edit");
+                         int filmId= scanner.nextInt();
+
+                        try{ System.out.print(userDao.getFilm(filmId).getName()+":");
+                            int rating=scanner.nextInt();
+                           if( userDao.updateRating(user.getId(), filmId,rating))
+                               System.out.println("Updated");
+                           else System.out.println("Could not update");
+                        }
+                        catch (ResourceNotFoundException e){
+                            System.out.println(e.getMessage());
+                        }
+                        catch (SQLException e){
+                            System.out.println("Could not update rating");
+                        }
+
+                     }else if(viewChoice==2){
+                         System.out.println("Enter the id of the show you'd like to delete");
+                         int filmId= scanner.nextInt();
+                         try {
+                             if(userDao.deleteRating(user.getId(),filmId)) System.out.println("Successfully deleted film rating");
+                         }catch (SQLException e){
+                             System.out.println("Could not delete rating");
+                         }
+                     }
+                }while(viewChoice!=0);
             }
         } while (choice != 3);
     }

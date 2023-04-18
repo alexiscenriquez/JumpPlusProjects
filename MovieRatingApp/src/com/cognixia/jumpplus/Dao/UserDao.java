@@ -15,4 +15,6 @@ public interface UserDao {
     Optional<User> authenticateUser(String username, String password) throws SQLException;
 
     boolean addRating(int userId, int filmId, int rating) throws SQLException;
+    boolean deleteRating(int userID,int filmId) throws SQLException;
+    boolean updateRating(int userId, int filmId,int rating) throws SQLException, ResourceNotFoundException;
 }
