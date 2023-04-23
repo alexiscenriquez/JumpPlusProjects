@@ -23,6 +23,7 @@ public interface TeacherDao {
     void sortStudentsByGrade(int classID) throws SQLException;
     void sortStudentsByName(int classID) throws SQLException;
     boolean findAverage(int classID) throws SQLException;
+    boolean findMedian(int classID) throws SQLException;
     boolean addClass(Classes classes) throws SQLException;
 
 }

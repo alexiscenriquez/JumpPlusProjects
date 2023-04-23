@@ -229,6 +229,33 @@ public class TeacherDaoSql implements TeacherDao {
  }
     @Override
     public boolean findAverage(int classID) throws SQLException {
+        PreparedStatement pstmt= conn.prepareStatement(" select avg(grade) as avg from student_class where class_id=?");
+       pstmt.setInt(1,classID);
+        ResultSet rs=pstmt.executeQuery();
+        if(rs.next()){
+            System.out.println(rs.getDouble("avg"));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean findMedian(int classID) throws SQLException {
+        PreparedStatement pstmt=conn.prepareStatement("SELECT AVG(grade) as median_val\n" +
+                "FROM (\n" +
+                "SELECT sc.grade, @rownum:=@rownum+1 as `row_number`, @total_rows:=@rownum\n" +
+                "  FROM student_class sc, (SELECT @rownum:=0) r\n" +
+                "  WHERE sc.class_id=?\n" +
+                "  ORDER BY sc.grade\n" +
+                ") as med\n" +
+                "WHERE med.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );");
+
+        pstmt.setInt(1,classID);
+       ResultSet rs= pstmt.executeQuery();
+       if(rs.next()){
+           System.out.println( rs.getDouble("median_val"));
+           return true;
+       }
         return false;
     }
 
