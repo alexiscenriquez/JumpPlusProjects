@@ -11,6 +11,11 @@ import java.util.Optional;
 import java.util.Scanner;
 
 public class Main {
+    public static final String ANSI_Green = "\u001B[32m";
+    public static final String ANSI_Blue = "\u001B[34m";
+    public static final String ANSI_Cyan = "\u001B[36m";
+    public static final String ANSI_RESET="\u001B[37m";
+    public static final String ANSI_Red="\u001B[31m";
     public static void main(String[] args) {
         System.out.println("Welcome!");
         Scanner scanner = new Scanner(System.in);
@@ -29,17 +34,17 @@ public static void menu(Scanner scanner,TeacherDaoSql teacherDao){
 
     StudentDaoSql studentDao=new StudentDaoSql();
     do {
-        System.out.println("Please select from the menu");
-        System.out.println("1. Create Account \n2. Log in");
+        System.out.println(ANSI_Cyan+"Please select from the menu");
+        System.out.println(ANSI_Blue+"1. Create Account \n2. Log in") ;
         choice = scanner.nextInt();
         if (choice == 1) {
-            System.out.println("1- Teacher \t2- Student");
+            System.out.println(ANSI_Green+"1- Teacher \t2- Student" + ANSI_RESET);
             role = scanner.nextInt();
             if (role == 1)
                 signUp(scanner, teacherDao);
             else signUp(scanner, studentDao);
         } else if (choice == 2) {
-            System.out.println("1- Teacher \t2- Student");
+            System.out.println(ANSI_Green+"1- Teacher \t2- Student" + ANSI_RESET);
             role = scanner.nextInt();
             if (role == 1) {
                 Teacher teacher = signIn(scanner, teacherDao);
@@ -49,9 +54,9 @@ public static void menu(Scanner scanner,TeacherDaoSql teacherDao){
                         do {
                             List<Classes> classList = teacherDao.getClasses(teacher.getId());
                             if (classList.isEmpty()) {
-                                System.out.println("1 - Add a class \t 0- Exit");
+                                System.out.println(ANSI_Green+"1 - Add a class \t 0- Exit"  + ANSI_RESET);
                             } else {
-                                System.out.println("1 - Add a class \t 2- View a Class \t 0- Exit");
+                                System.out.println(ANSI_Green+"1 - Add a class \t 2- View a Class \t 0- Exit"  + ANSI_RESET);
                             }
                             choice2 = scanner.nextInt();
                             if (choice2 == 1) {
@@ -62,7 +67,7 @@ public static void menu(Scanner scanner,TeacherDaoSql teacherDao){
                             }
                         } while (choice2 != 0);
                     } catch (SQLException e) {
-                        System.out.println(e.getMessage());
+                        System.out.println(ANSI_Red+e.getMessage()+ANSI_RESET);
                     }
                 }
             }
@@ -95,7 +100,7 @@ public static void menu(Scanner scanner,TeacherDaoSql teacherDao){
         try {
             teacherDao.addTeacher(teacher);
         } catch (SQLException e) {
-            System.out.println("User name must be unique");
+            System.out.println(ANSI_Red+"User name must be unique"+ANSI_RESET);
         }
     }
     public static void signUp(Scanner scanner, StudentDaoSql studentDaoSql) {
@@ -111,7 +116,7 @@ public static void menu(Scanner scanner,TeacherDaoSql teacherDao){
         try {
             studentDaoSql.signUp(student);
         } catch (SQLException e) {
-            System.out.println("User name must be unique");
+            System.out.println(ANSI_Red+"User name must be unique"+ANSI_RESET);
         }
     }
 
@@ -126,13 +131,13 @@ public static void menu(Scanner scanner,TeacherDaoSql teacherDao){
             Optional<Teacher> found = teacherDao.authenticateTeacher(username, password);
 
             if (found.isEmpty())
-                System.out.println("Account not found, please create an account");
+                System.out.println(ANSI_Red+"Account not found, please create an account"+ANSI_RESET);
             else {
                 teacher = found.get();
-                System.out.println("Welcome " + teacher.getFirstName() + " " + teacher.getLastName());
+                System.out.println(ANSI_Cyan+"Welcome " + teacher.getFirstName() + " " + teacher.getLastName());
             }
         } catch (SQLException e) {
-            System.out.println("Sign in failed");
+            System.out.println(ANSI_Red+"Sign in failed"+ANSI_RESET);
         }
         return teacher;
     }
@@ -146,13 +151,13 @@ public static void menu(Scanner scanner,TeacherDaoSql teacherDao){
             Optional<Student> found = studentDao.authenticate(username, password);
 
             if (found.isEmpty())
-                System.out.println("Account not found, please create an account");
+                System.out.println(ANSI_Red+"Account not found, please create an account"+ANSI_RESET);
             else {
                 student = found.get();
-                System.out.println("Welcome " + student.getFirstName() + " " + student.getLastName());
+                System.out.println(ANSI_Cyan+"Welcome " + student.getFirstName() + " " + student.getLastName());
             }
         } catch (SQLException e) {
-            System.out.println("Sign in failed");
+            System.out.println(ANSI_Red+"Sign in failed"+ANSI_RESET);
         }
         return student;
     }
@@ -165,9 +170,8 @@ public static void menu(Scanner scanner,TeacherDaoSql teacherDao){
         Classes classes = new Classes(0, className, num, teacher.getId());
         try {
             teacherDao.addClass(classes);
-            teacherDao.getClasses(teacher.getId());
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println(ANSI_Red+e.getMessage()+ANSI_RESET);
         }
     }
 
@@ -183,8 +187,8 @@ public static void menu(Scanner scanner,TeacherDaoSql teacherDao){
                     List<Student> studentList = getClass(classId,teacherDaoSql);
                     do {
                         if (!studentList.isEmpty())
-                            System.out.println("1- Add Student\t2- Update Student Grade\t3- Remove Student\t4- Sort By Grade\t5- Sort By Name\t0- Exit");
-                        else System.out.println("1- Add Student \t0- Exit");
+                            System.out.println(ANSI_Green+"1- Add Student\t2- Update Student Grade\t3- Remove Student\t4- Sort By Grade\t5- Sort By Name\t0- Exit"+ANSI_RESET);
+                        else System.out.println(ANSI_Green+"1- Add Student \t0- Exit"+ANSI_RESET);
                         choice = scanner.nextInt();
                         int studentID;
                         double grade;
@@ -213,7 +217,7 @@ public static void menu(Scanner scanner,TeacherDaoSql teacherDao){
                                     getClass(classId,teacherDaoSql);
                                 }
                             } catch (SQLException | ResourceNotFoundException e) {
-                                System.out.println(e.getMessage());
+                                System.out.println(ANSI_Red+e.getMessage()+ANSI_RESET);
                             }
                         } else if (choice == 3) {
                             System.out.print("Student ID:");
@@ -237,9 +241,9 @@ public static void menu(Scanner scanner,TeacherDaoSql teacherDao){
      public static List<Student> getClass(int classId,TeacherDaoSql teacherDaoSql){
 
          try {
-             System.out.print("Class AVG:") ;
+             System.out.print(ANSI_Blue+"Class AVG:") ;
              teacherDaoSql.findAverage(classId);
-             System.out.print("Class Median:") ;
+             System.out.print(ANSI_Cyan+"Class Median:"+ANSI_RESET) ;
              teacherDaoSql.findMedian(classId);
              return teacherDaoSql.getStudents(classId);
          } catch (SQLException e) {

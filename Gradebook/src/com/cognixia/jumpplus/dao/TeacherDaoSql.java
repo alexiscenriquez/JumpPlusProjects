@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.cognixia.jumpplus.Main.*;
+
 public class TeacherDaoSql implements TeacherDao {
     Connection conn;
 
@@ -93,7 +95,7 @@ public class TeacherDaoSql implements TeacherDao {
        String lName;
        double grade;
        if(rs.next()) {
-           System.out.println("Students in class");
+           System.out.println(ANSI_Blue+"Students in class");
            System.out.printf("%20s %20s %20s%n", "id", "Name", "Grade");
          do  {
                studentId = rs.getInt("student.id");
@@ -106,7 +108,7 @@ public class TeacherDaoSql implements TeacherDao {
 
            }while (rs.next());
        }
-           else { System.out.println("No students in this class");}
+           else { System.out.println(ANSI_Red+"No students in this class"+ANSI_RESET);}
 
         return studentList;
     }
@@ -168,10 +170,10 @@ public class TeacherDaoSql implements TeacherDao {
 
             }
             if(classList.isEmpty()){
-                System.out.println("You are not assigned to any classses");
+                System.out.println(ANSI_Red+"You are not assigned to any classses"+ANSI_RESET);
             }
             else {
-                System.out.println("Your Classes");
+                System.out.println(ANSI_Blue+"Your Classes");
                 System.out.printf("%20s %20s%n","ID","Class");
                 for (Classes classes : classList) {
                     System.out.printf("%20s %20s%n", classes.getId(), classes.getName() + " " + classes.getNum());
