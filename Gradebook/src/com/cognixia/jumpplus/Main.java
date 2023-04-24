@@ -22,6 +22,7 @@ public class Main {
         TeacherDaoSql teacherDao = new TeacherDaoSql();
         try {
             teacherDao.setConnection();
+
             menu(scanner,teacherDao);
 
         } catch (SQLException | IOException | ClassNotFoundException e) {
@@ -33,6 +34,7 @@ public static void menu(Scanner scanner,TeacherDaoSql teacherDao){
     int role;
 
     StudentDaoSql studentDao=new StudentDaoSql();
+
     do {
         System.out.println(ANSI_Cyan+"Please select from the menu");
         System.out.println(ANSI_Blue+"1. Create Account \n2. Log in") ;
@@ -42,7 +44,19 @@ public static void menu(Scanner scanner,TeacherDaoSql teacherDao){
             role = scanner.nextInt();
             if (role == 1)
                 signUp(scanner, teacherDao);
-            else signUp(scanner, studentDao);
+            else {
+                try {
+                    studentDao.setConnection();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                signUp(scanner, studentDao);
+            }
+
         } else if (choice == 2) {
             System.out.println(ANSI_Green+"1- Teacher \t2- Student" + ANSI_RESET);
             role = scanner.nextInt();
